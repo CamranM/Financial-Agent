@@ -4,10 +4,11 @@ from langchain_ollama import ChatOllama
 from langchain.agents import create_agent
 import tools
 from langgraph.checkpoint.memory import InMemorySaver
+import streamlit as st
 
 
 
-model = ChatOllama(model="qwen3:4b",temperature=0)
+model = ChatOllama(model="qwen3:14b",temperature=0)
 checkpointer = InMemorySaver()
 
 agent_tools = [tools.get_stock_price, 
@@ -73,36 +74,48 @@ config = {
     }
 }
 
-response = agent.invoke(
-    {
-        "messages": [
+
+#response = agent.invoke(
+#    {
+#        "messages": [
+#            {
+#                "role": "user",
+#                "content": "analyze AAPL?"
+#            }
+#        ]
+#    },
+#    config=config
+#)
+
+st.title("Finance Agent")
+
+content = st.chat_input("What can I help you with? Enter q to stop.")
+if content:
+    if content == "q" or content == "Q":
+        st.write("Session Ended. Thank You!")
+    else:
+        st.write("Question: ", content)
+        st.write("Thinking...")
+        response = agent.invoke(
             {
-                "role": "user",
-                "content": "analyze AAPL?"
-            }
-        ]
-    },
-    config=config
-)
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": content
+                    }
+                ]
+            },
+            config=config
+        )
+        # print(response["messages"][-1].content)
+        st.write(response["messages"][-1].content)
 
-response = agent.invoke(
-    {
-        "messages": [
-            {
-                "role": "user",
-                "content": "What company was I talking about?."
-            }
-        ]
-    },
-    config=config
-)
 
-print(response["messages"][-1].content)
 
-for i, message in enumerate(response["messages"]):
-    print(f"\n--- MESSAGE {i} ---")
-    print("Type:", type(message).__name__)
-    print("Content:", message.content)
+#for i, message in enumerate(response["messages"]):
+#    print(f"\n--- MESSAGE {i} ---")
+#    print("Type:", type(message).__name__)
+#    print("Content:", message.content)
 
-    if hasattr(message, "tool_calls") and message.tool_calls:
-        print("Tool calls:", message.tool_calls)
+#    if hasattr(message, "tool_calls") and message.tool_calls:
+#        print("Tool calls:", message.tool_calls)
