@@ -3,7 +3,7 @@ from langchain_core.tools import tool
 from statsmodels.tsa.arima.model import ARIMA
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
-from langchain.tools import tool
+# from langchain.tools import tool
 
 @tool
 def get_stock_price(ticker: str):
