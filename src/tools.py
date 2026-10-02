@@ -4,6 +4,7 @@ from statsmodels.tsa.arima.model import ARIMA
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 # from langchain.tools import tool
+from pathlib import Path
 
 @tool
 def get_stock_price(ticker: str):
@@ -217,11 +218,13 @@ embeddings = OllamaEmbeddings(
     model="nomic-embed-text"
 )
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 vectorstore = Chroma(
-    persist_directory="rag/vectorstore",
+    persist_directory=str(BASE_DIR / "rag" / "vectorstore"),
     embedding_function=embeddings
 )
-
+print("VECTORSTORE COUNT:", vectorstore._collection.count())
 retriever = vectorstore.as_retriever(
     search_kwargs={"k": 4}
 )

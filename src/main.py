@@ -87,6 +87,7 @@ config = {
 #    config=config
 #)
 
+
 st.title("Finance Agent")
 
 content = st.chat_input("What can I help you with? Enter q to stop.")

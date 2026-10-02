@@ -6,12 +6,14 @@ from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 
 
-PDF_PATH = "documents/AAPL_10K.pdf"
-VECTORSTORE_PATH = "rag/vectorstore"
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+PDF_PATH = BASE_DIR / "rag" / "documents" / "AAPL_10K.pdf"
+VECTORSTORE_PATH = BASE_DIR / "rag" / "vectorstore"
 
 
 # Load PDF
-loader = PyPDFLoader(PDF_PATH)
+loader = PyPDFLoader(str(PDF_PATH))
 documents = loader.load()
 
 print(f"Loaded {len(documents)} pages")
@@ -38,7 +40,7 @@ embeddings = OllamaEmbeddings(
 vectorstore = Chroma.from_documents(
     documents=chunks,
     embedding=embeddings,
-    persist_directory=VECTORSTORE_PATH
+    persist_directory=str(VECTORSTORE_PATH)
 )
 
 print("Vector store created successfully.")
